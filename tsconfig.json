@@ -1,0 +1,13 @@
+
+{
+  "include": ["src"],
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "outDir": "./dist",
+    "rootDir": "./src"
+  }
+} 
