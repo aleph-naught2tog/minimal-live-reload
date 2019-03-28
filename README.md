@@ -1,1 +1,5 @@
-# minimal_reload
+# minimal live reloader
+
+## setup
+
+To install, run: `npm install`.
