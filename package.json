@@ -1,12 +1,18 @@
 {
   "name": "minimal-live-reload",
-  "version": "1.0.0",
+  "version": "1.0.000001",
   "description": "A minimal live-reloader",
   "main": "./dist/index.js",
   "bin": {
     "minimal_live_reload": "./bin/minimal_live_reload"
   },
-  "keywords": [],
+  "scripts": {
+    "prepack": "tsc -p ./tsconfig.json"
+  },
+  "files": [
+    "./dist/**/*"
+  ],
+  "keywords": ["livereload", "minimal"],
   "author": "aleph-naught2tog",
   "license": "ISC",
   "devDependencies": {
