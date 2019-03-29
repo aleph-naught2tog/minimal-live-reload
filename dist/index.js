@@ -5,12 +5,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = __importDefault(require("fs"));
 const ws_1 = __importDefault(require("ws"));
+const path_1 = __importDefault(require("path"));
+const http_1 = __importDefault(require("http"));
 function run() {
-    const PORT = 3333;
+    const SOCKET_PORT = 3333;
+    const HTTP_PORT = SOCKET_PORT + 1;
     const NORMAL_CLOSE_CODE = 1000;
     const [_interpreter, _script, target = process.cwd()] = process.argv;
-    const socketServer = getSocketServer(PORT);
+    const socketServer = getSocketServer(SOCKET_PORT);
     const watcher = initializeFileWatcher(target, socketServer);
+    const socketFile = fs_1.default.readFileSync(path_1.default.join(__dirname, 'socket.js'));
+    const httpServer = http_1.default.createServer((request, response) => {
+        if (request.url === '/socket.js') {
+            response.end(socketFile);
+        }
+    });
+    httpServer.listen(HTTP_PORT, () => {
+        console.log(`[http] Serving 'socket.js' on port ${HTTP_PORT}.`);
+    });
     process.on('SIGINT', () => {
         console.log('\nCaught SIGINT; exiting...');
         watcher.close();

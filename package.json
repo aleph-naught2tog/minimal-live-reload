@@ -1,6 +1,6 @@
 {
   "name": "minimal-live-reload",
-  "version": "1.0.000002",
+  "version": "1.0.000003",
   "description": "A minimal live-reloader",
   "main": "./dist/index.js",
   "bin": {

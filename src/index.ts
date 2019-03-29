@@ -1,14 +1,28 @@
 import fs from 'fs';
 import ws from 'ws';
+import path from 'path';
+import http from 'http';
 
 export function run() {
-  const PORT = 3333;
+  const SOCKET_PORT = 3333;
+  const HTTP_PORT = SOCKET_PORT + 1;
   const NORMAL_CLOSE_CODE = 1000;
 
   const [_interpreter, _script, target = process.cwd()] = process.argv;
 
-  const socketServer = getSocketServer(PORT);
+  const socketServer = getSocketServer(SOCKET_PORT);
   const watcher = initializeFileWatcher(target, socketServer);
+  const socketFile = fs.readFileSync(path.join(__dirname, 'socket.js'));
+
+  const httpServer = http.createServer((request, response) => {
+    if (request.url === '/socket.js') {
+      response.end(socketFile);
+    }
+  });
+
+  httpServer.listen(HTTP_PORT, () => {
+    console.log(`[http] Serving 'socket.js' on port ${HTTP_PORT}.`);
+  });
 
   process.on('SIGINT', () => {
     console.log('\nCaught SIGINT; exiting...');
@@ -21,7 +35,6 @@ export function run() {
     process.exit(0);
   });
 }
-
 
 function initializeFileWatcher(target: string, socketServer: ws.Server) {
   const watcher = fs.watch(target, { recursive: true });
@@ -42,7 +55,6 @@ function initializeFileWatcher(target: string, socketServer: ws.Server) {
   return watcher;
 }
 
-
 function getSocketServer(port: number) {
   const socketServer = new ws.Server({ port: port, clientTracking: true });
 
@@ -56,9 +68,7 @@ function getSocketServer(port: number) {
       console.log(`[ws] Client disconnected`);
       clientSocket.terminate();
     });
-
   });
 
   return socketServer;
 }
-
