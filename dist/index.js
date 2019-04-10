@@ -7,6 +7,7 @@ const fs_1 = __importDefault(require("fs"));
 const ws_1 = __importDefault(require("ws"));
 const path_1 = __importDefault(require("path"));
 const http_1 = __importDefault(require("http"));
+// TODO: warn/debug/info levels
 function run() {
     const SOCKET_PORT = 3333;
     const HTTP_PORT = SOCKET_PORT + 1;
@@ -40,8 +41,17 @@ function initializeFileWatcher(target, socketServer) {
     watcher.on('change', (_type, file) => {
         console.log(`[fs] Change detected in ${file}.`);
         socketServer.clients.forEach(client => {
-            console.log(`[ws] Notifying socket.`);
-            client.send(dataAsString);
+            console.log(`[ws] Attempting to notify socket.`);
+            if (client.readyState === client.OPEN) {
+                client.send(dataAsString);
+                console.log(`[ws] Socket notified.`);
+            }
+            else {
+                console.log([
+                    `[ws:WARN] Socket is not open.`,
+                    `          No notification sent for file ${file}.`
+                ].join('\n'));
+            }
         });
     });
     return watcher;
