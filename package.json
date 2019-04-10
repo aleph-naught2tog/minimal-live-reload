@@ -1,6 +1,6 @@
 {
   "name": "minimal-live-reload",
-  "version": "1.0.000003",
+  "version": "1.0.35",
   "description": "A minimal live-reloader",
   "main": "./dist/index.js",
   "bin": {
@@ -13,16 +13,19 @@
     "dist/**/*",
     "bin/**/*"
   ],
-  "keywords": ["livereload", "minimal"],
+  "keywords": [
+    "livereload",
+    "minimal"
+  ],
   "author": "aleph-naught2tog",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^11.11.7",
+    "@types/node": "^11.13.2",
     "@types/ws": "^6.0.1",
-    "typescript": "^3.3.4000"
+    "typescript": "^3.4.3"
   },
   "dependencies": {
-    "ws": "^6.2.0"
+    "ws": "^6.2.1"
   },
   "repository": {
     "type": "git",
