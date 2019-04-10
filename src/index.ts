@@ -3,6 +3,8 @@ import ws from 'ws';
 import path from 'path';
 import http from 'http';
 
+// TODO: warn/debug/info levels
+
 export function run() {
   const SOCKET_PORT = 3333;
   const HTTP_PORT = SOCKET_PORT + 1;
@@ -47,8 +49,18 @@ function initializeFileWatcher(target: string, socketServer: ws.Server) {
     console.log(`[fs] Change detected in ${file}.`);
 
     socketServer.clients.forEach(client => {
-      console.log(`[ws] Notifying socket.`);
-      client.send(dataAsString);
+      console.log(`[ws] Attempting to notify socket.`);
+      if (client.readyState === client.OPEN) {
+        client.send(dataAsString);
+        console.log(`[ws] Socket notified.`);
+      } else {
+        console.log(
+          [
+            `[ws:WARN] Socket is not open.`,
+            `          No notification sent for file ${file}.`
+          ].join('\n')
+        );
+      }
     });
   });
 
